@@ -3,13 +3,18 @@ package com.katza.myfirstfirebaseapplication;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -18,6 +23,7 @@ import java.util.Map;
 
 public class FirestoreDAO { //data access object
     private static final String COLLECTION_NAME = "students";
+    private ListenerRegistration listenerRegistration;
 
     public void createDocument(String name, String id, int grade)
     {
@@ -90,5 +96,47 @@ public class FirestoreDAO { //data access object
                 Log.d("DAR_FIREBASE","new grade: " + newGrade);
             }
         });
+    }
+
+    public void listenToADocumentChange(String docID)
+    {
+        DocumentReference docRef = FirebaseFirestore.getInstance().collection(COLLECTION_NAME).document(docID);
+        listenerRegistration = docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                Log.d("DAR_FIREBASE","doc changed: " + docID);
+                if(value!=null&& value.exists()){
+                    Student student = value.toObject(Student.class);
+                    Log.d("DAR_FIREBASE","doc changed: " + student.toString());
+                }
+            }
+        });
+    }
+
+    public void listenToAllDocumentChange()
+    {
+        CollectionReference colRef = FirebaseFirestore.getInstance().collection(COLLECTION_NAME);
+
+        colRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                if(error!=null || value == null){
+                    return;
+                }
+                for(DocumentChange docC : value.getDocumentChanges()){
+                    Student student = docC.getDocument().toObject(Student.class);
+
+                    Log.d("DAO_MULTIPLE_CHANGES", docC.getType() + ": " + student.toString());
+                }
+            }
+        });
+    }
+
+    public void stopListening()
+    {
+        if(listenerRegistration!=null){
+            listenerRegistration.remove();
+            listenerRegistration = null;
+        }
     }
 }

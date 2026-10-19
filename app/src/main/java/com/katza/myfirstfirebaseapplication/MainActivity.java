@@ -22,6 +22,8 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView tvContent;
 
+    FirestoreDAO fsDAO;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         tvContent = findViewById(R.id.tvcontent);
         btnUpdate = findViewById(R.id.btnUpdate);
 
-        FirestoreDAO fsDAO = new FirestoreDAO();
+        fsDAO = new FirestoreDAO();
 
         btnUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,5 +86,17 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        fsDAO.listenToAllDocumentChange();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        fsDAO.stopListening();
     }
 }
