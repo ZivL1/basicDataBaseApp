@@ -35,10 +35,8 @@ public class Student {
 
     @Override
     public String toString() {
-        return "Student{" +
-                "fullName='" + fullName + '\'' +
-                ", id='" + id + '\'' +
-                ", grade=" + grade +
-                '}';
+        return "Name: " + fullName  +
+                ", " + id +
+                ", grade: " + grade ;
     }
 }

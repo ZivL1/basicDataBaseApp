@@ -1,87 +1,159 @@
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools" android:id="@+id/main" android:layout_width="match_parent" android:layout_height="match_parent">
-    <ScrollView
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ListView
+        android:id="@+id/listView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/bottomlayout"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="40sp"
-            android:gravity="center">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="20sp"
-                android:textDirection="rtl"
-                android:id="@+id/tvcontent"/>
-
-        </LinearLayout>
-    </ScrollView>
     <LinearLayout
+        android:id="@+id/bottomlayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/bottomlayout"
         android:orientation="vertical"
         android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent">
 
+        <!-- אזור התמונה מעל תעודת הזהות -->
+        <LinearLayout
+            android:id="@+id/imageLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="4dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvStatus"/>
+            <ImageView
+                android:id="@+id/ivPreview"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@android:drawable/ic_menu_camera"
+                android:scaleType="centerCrop"
+                android:background="#DDDDDD"
+                android:contentDescription="תמונת התלמיד" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:id="@+id/tvStats"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/btnLoad"
+                    android:text="הצג"
+                    android:textSize="12sp"
+
+                    />
+
+                <Button
+                    android:id="@+id/btnSaveImage64"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="שמור תמונה 64"
+                    android:textSize="12sp" />
+
+                <Button
+                    android:id="@+id/btnCameraOrGalery"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="צילום או גלריה"
+                    android:textSize="12sp" />
+
+                <Button
+                    android:id="@+id/btnSaveImage"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="שמור תמונה"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- תעודת זהות -->
         <EditText
+            android:id="@+id/tz"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:id="@+id/tz"
             android:gravity="center"
             android:text=""
-            android:hint="תעודת זהות"/>
+            android:hint="תעודת זהות" />
 
+        <!-- שם מלא -->
         <EditText
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
             android:id="@+id/fullname"
-            android:gravity="center"
-            android:hint="שם מלא"/>
-
-        <EditText
             android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:id="@+id/grade"
             android:gravity="center"
-            android:hint="ציון סופי"/>
+            android:hint="שם מלא" />
 
+        <!-- ציון סופי -->
+        <EditText
+            android:id="@+id/grade"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:hint="ציון סופי" />
+
+        <!-- כפתורי ניהול תלמידים -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
             <Button
                 android:id="@+id/btnInsert"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:text="הוסף תלמיד"/>
+                android:text="הוסף תלמיד" />
 
             <Button
                 android:id="@+id/btnSelect"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:text="הצג תלמידים"/>
+                android:text="הצג תלמידים" />
 
             <Button
                 android:id="@+id/btnUpdate"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:text="עדכן תלמיד"/>
+                android:text="עדכן תלמיד" />
 
             <Button
                 android:id="@+id/btnDelete"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:text="מחק תלמיד"/>
+                android:text="מחק תלמיד" />
 
         </LinearLayout>
+
     </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
