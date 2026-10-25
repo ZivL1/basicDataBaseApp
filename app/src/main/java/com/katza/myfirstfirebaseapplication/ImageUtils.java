@@ -32,8 +32,7 @@ public class ImageUtils {
     }
 
     // Base64 -> byte[] -> פתיחת JPEG -> Bitmap
-    public static Bitmap convertBase64StringToBitmap(
-            String base64) {
+    public static Bitmap convertBase64StringToBitmap(String base64) {
 
         if (base64 == null || base64.isEmpty()) return null;
 

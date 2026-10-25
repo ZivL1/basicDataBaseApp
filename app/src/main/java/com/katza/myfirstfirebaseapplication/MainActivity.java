@@ -85,14 +85,25 @@ public class MainActivity extends AppCompatActivity {
         btnSaveImage = findViewById(R.id.btnSaveImage);
         btnSaveImage64 = findViewById(R.id.btnSaveImage64);
 
-        btnSaveImage.setOnClickListener(new View.OnClickListener() {
+        btnSaveImage64.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Bitmap bitmap = loadForCompression();
+                if(bitmap == null){
+                    status("אין תמונה");
+                    return;
+                }
+
+                String base64Img = ImageUtils.convertBitmapToString(bitmap);
+                if(base64Img==null){
+                    status("שגיאה בדחיסת התמונה");
+                    return;
+                }
 
             }
         });
 
-        btnSaveImage64.setOnClickListener(new View.OnClickListener() {
+        btnSaveImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
