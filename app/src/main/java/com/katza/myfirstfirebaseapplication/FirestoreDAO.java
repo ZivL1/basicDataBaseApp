@@ -25,12 +25,13 @@ public class FirestoreDAO { //data access object
     private static final String COLLECTION_NAME = "students";
     private ListenerRegistration listenerRegistration;
 
-    public void createDocument(String name, String id, int grade)
+    public void createDocument(String name, String id, int grade, String data)
     {
         Map<String, Object> studentRecord = new HashMap<>();
         studentRecord.put("fullName", name);
         studentRecord.put("id",id);
         studentRecord.put("grade",grade);
+        studentRecord.put("data",data);
 
         DocumentReference docRef = FirebaseFirestore.getInstance().collection(COLLECTION_NAME).document(id);
         docRef.set(studentRecord).addOnSuccessListener(new OnSuccessListener<Void>() {

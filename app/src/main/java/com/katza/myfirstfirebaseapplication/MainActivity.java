@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.ImageDecoder;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -43,7 +44,7 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
 
     private EditText etName, etId, etGrade;
-    private Button btnInsert, btnSelect, btnUpdate, btnDelete, btnCamerOrGalery,btnSaveImage, btnSaveImage64;
+    private Button btnInsert, btnSelect, btnUpdate, btnDelete, btnCamerOrGalery,btnSaveImage, btnSaveImage64, btnLoad;
     private ImageView ivPreview;
     private TextView tvStats, tvStatus;
     private ListView lv;
@@ -58,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
     private long originalBytes;
 
     private FirestoreDAO fsDAO;
+    private ImageDAO imgDAO;
 
 
     @Override
@@ -84,22 +86,57 @@ public class MainActivity extends AppCompatActivity {
         btnCamerOrGalery = findViewById(R.id.btnCameraOrGalery);
         btnSaveImage = findViewById(R.id.btnSaveImage);
         btnSaveImage64 = findViewById(R.id.btnSaveImage64);
+        imgDAO = new ImageDAO();
+        btnLoad = findViewById(R.id.btnLoad);
 
+
+        btnLoad.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                imgDAO.readImg(etId.getText().toString(), new IFirestoreImageCallback() {
+                    @Override
+                    public void onSuccess(Object result) {
+                        Bitmap bitmap = ImageUtils.convertBase64ToBitmap(result.toString());
+                        ivPreview.setImageBitmap(bitmap);
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        status("שגיאה בטעינת התמונה");
+                    }
+                });
+            }
+        });
         btnSaveImage64.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Bitmap bitmap = loadForCompression();
-                if(bitmap == null){
-                    status("אין תמונה");
-                    return;
-                }
+                try {
+                    Bitmap bitmap = loadForCompression();
+                    if (bitmap == null) {
+                        status("אין תמונה");
+                        return;
+                    }
 
-                String base64Img = ImageUtils.convertBitmapToString(bitmap);
-                if(base64Img==null){
-                    status("שגיאה בדחיסת התמונה");
-                    return;
-                }
+                    String base64Img = ImageUtils.convertBitmapToBase64(bitmap);
+                    if (base64Img == null) {
+                        status("שגיאה בדחיסת התמונה");
+                        return;
+                    }
+                    imgDAO.saveToFirestore(etId.getText().toString(), "base64", base64Img, new IFirestoreImageCallback<Void>() {
+                        @Override
+                        public void onSuccess(Void result) {
+                            status("תמונה נשמרה בהצלחה");
+                        }
 
+                        @Override
+                        public void onFailure(Exception e) {
+                            status("שגיאה בשמירת התמונה");
+                        }
+                    });
+
+                }catch (IOException e){
+                    status("שגיאה בטעינת התמונה");
+                }
             }
         });
 
@@ -176,8 +213,24 @@ public class MainActivity extends AppCompatActivity {
         btnInsert.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                fsDAO.createDocument(etName.getText().toString(),etId.getText().toString(), Integer.parseInt(etGrade.getText().toString()));
+                try {
+                    Bitmap bitmap = loadForCompression();
+                    if (bitmap == null) {
+                        status("אין תמונה");
+                        return;
+                    }
 
+                    String base64Img = ImageUtils.convertBitmapToBase64(bitmap);
+                    if (base64Img == null) {
+                        status("שגיאה בדחיסת התמונה");
+                        return;
+                    }
+                    fsDAO.createDocument(etName.getText().toString(),etId.getText().toString(), Integer.parseInt(etGrade.getText().toString()),base64Img);
+
+
+                }catch (IOException e){
+                    status("שגיאה בטעינת התמונה");
+                }
             }
         });
 
@@ -196,7 +249,7 @@ public class MainActivity extends AppCompatActivity {
                     fsDAO.readAllDocuments(new IFirestoreCallback() {
                         @Override
                         public void onDataReceived(ArrayList<Student> students) {
-                                ArrayAdapter<Student> adapter = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1,students);
+                                StudentAdapter adapter = new StudentAdapter(MainActivity.this,students);
                                 lv.setAdapter(adapter);
 
 

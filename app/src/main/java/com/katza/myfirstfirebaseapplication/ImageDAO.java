@@ -6,6 +6,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -15,7 +16,7 @@ public class ImageDAO {
 
     String COLLECTION_IMAGE_NAME = "image_labs";
     public void saveToFirestore(
-            String name,
+            String id,
             String type,
             String data,
             IFirestoreImageCallback<Void> iFirestoreImageCallback
@@ -26,7 +27,7 @@ public class ImageDAO {
         item.put("type",type);
         item.put("data",data);
 
-        DocumentReference docRef = db.collection(COLLECTION_IMAGE_NAME).document(name);
+        DocumentReference docRef = db.collection(COLLECTION_IMAGE_NAME).document(id);
 
         docRef.set(item).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
@@ -39,6 +40,22 @@ public class ImageDAO {
                 iFirestoreImageCallback.onFailure(e);
             }
         });
+    }
+
+    public void readImg(String imgID, IFirestoreImageCallback iFirestoreImageCallback)
+    {
+            DocumentReference docRef = FirebaseFirestore.getInstance().collection(COLLECTION_IMAGE_NAME).document(imgID);
+            docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    iFirestoreImageCallback.onSuccess(documentSnapshot.getString("data"));
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    iFirestoreImageCallback.onFailure(e);
+                }
+            });
     }
 
 

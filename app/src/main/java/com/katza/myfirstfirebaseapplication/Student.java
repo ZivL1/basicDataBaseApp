@@ -2,11 +2,19 @@ package com.katza.myfirstfirebaseapplication;
 
 public class Student {
 
-    private String fullName, id;
+    private String fullName, id, data;
     private int grade;
 
     public Student() {
 
+    }
+
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
     }
 
     public String getFullName() {
