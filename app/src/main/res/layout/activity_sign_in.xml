@@ -8,41 +8,33 @@
     tools:context=".SignInActivity">
 
     <TextView
-        android:id="@+id/tvMail"
+        android:textStyle="bold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="50dp"
-        android:layout_marginBottom="500dp"
-        android:text="מייל:"
+        android:text="התחברות לחשבון"
         android:textSize="30dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <TextView
-        android:id="@+id/tvPass"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="סיסמה:"
-        android:textSize="30dp"
-        app:layout_constraintStart_toStartOf="@+id/tvMail"
-        app:layout_constraintTop_toBottomOf="@+id/tvMail" />
+        app:layout_constraintBottom_toTopOf="@+id/etMail"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/etMail"
-        android:layout_width="300dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        app:layout_constraintBottom_toTopOf="@+id/tvPass"
-        app:layout_constraintEnd_toStartOf="@+id/tvMail" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="200dp"
+        android:hint="Email"/>
 
     <EditText
         android:id="@+id/etPass"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        app:layout_constraintEnd_toStartOf="@+id/tvPass"
-        app:layout_constraintTop_toBottomOf="@+id/etMail" />
+        android:layout_marginTop="30dp"
+        app:layout_constraintTop_toBottomOf="@+id/etMail"
+        android:hint="Password"
+        />
 
     <Button
         android:id="@+id/btnSignIn"
@@ -53,5 +45,25 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etPass" />
+
+    <TextView
+        android:id="@+id/tvToRegister"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="אין לך חשבון? לחץ כדי לעבור להרשמה"
+        android:textColor="@color/design_default_color_primary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvSignInStatus" />
+
+    <TextView
+        android:id="@+id/tvSignInStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/holo_red_light"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnSignIn"
+        android:padding="10dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

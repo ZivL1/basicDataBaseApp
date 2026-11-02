@@ -36,6 +36,13 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -44,15 +51,18 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
 
     private EditText etName, etId, etGrade;
-    private Button btnInsert, btnSelect, btnUpdate, btnDelete, btnCamerOrGalery,btnSaveImage, btnSaveImage64, btnLoad;
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private Button btnInsert, btnSelect, btnUpdate, btnDelete, btnCamerOrGalery,btnSaveImage, btnSaveImage64, btnLoad, btnSignOut;
     private ImageView ivPreview;
-    private TextView tvStats, tvStatus;
+    private TextView tvStats, tvStatus, tvWelcome;
     private ListView lv;
 
     // משתני ActivityResult API
     private ActivityResultLauncher<String[]> galleryLauncher;
     private ActivityResultLauncher<Uri> cameraLauncher;
     private Uri cameraUri, selectedUri;
+    private String USER_COLLECTION_NAME = "users", name;
 
     private boolean sampleDrawable,selectedFromCamera;
     private int originalWidth,originalHeight;
@@ -88,8 +98,21 @@ public class MainActivity extends AppCompatActivity {
         btnSaveImage64 = findViewById(R.id.btnSaveImage64);
         imgDAO = new ImageDAO();
         btnLoad = findViewById(R.id.btnLoad);
+        tvWelcome = findViewById(R.id.tvWelcome);
+        btnSignOut = findViewById(R.id.btnSignOut);
 
+        loadUserData();
 
+        btnSignOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mAuth.signOut();
+
+                Intent intent = new Intent(MainActivity.this, SignInActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
         btnLoad.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -256,6 +279,31 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
 
+
+            }
+        });
+    }
+
+    private void loadUserData() {
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if(currentUser == null){
+            Intent intent = new Intent(MainActivity.this,SignInActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
+        String userId = currentUser.getUid();
+        db.collection(USER_COLLECTION_NAME).document(userId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if(documentSnapshot.exists()){
+                    name = documentSnapshot.getString("name");
+                    tvWelcome.setText("Welcome " + name);
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
 
             }
         });
